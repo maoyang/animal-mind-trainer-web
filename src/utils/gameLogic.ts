@@ -18,12 +18,21 @@ const initialKnowledgeTree: KnowledgeNode = {
 };
 
 export const loadKnowledgeTree = (): KnowledgeNode => {
-  const stored = localStorage.getItem(STORAGE_KEY);
-  return stored ? JSON.parse(stored) : initialKnowledgeTree;
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    return stored ? JSON.parse(stored) : initialKnowledgeTree;
+  } catch (e) {
+    console.error("載入知識樹失敗", e);
+    return initialKnowledgeTree;
+  }
 };
 
 export const saveKnowledgeTree = (tree: KnowledgeNode) => {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(tree));
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(tree));
+  } catch (e) {
+    console.error("儲存知識樹失敗", e);
+  }
 };
 
 export const addNewAnimal = (
@@ -47,7 +56,9 @@ export const addNewAnimal = (
   
   for (let i = 0; i < path.length - 1; i++) {
     const direction = path[i] ? 'yes' : 'no';
-    current = current[direction] as KnowledgeNode;
+    if (current[direction]) {
+      current = current[direction] as KnowledgeNode;
+    }
   }
 
   const lastDirection = path[path.length - 1] ? 'yes' : 'no';
@@ -61,4 +72,8 @@ export const addNewAnimal = (
   };
 
   return newTree;
+};
+
+export const resetKnowledgeTree = () => {
+  localStorage.removeItem(STORAGE_KEY);
 };

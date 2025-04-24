@@ -3,9 +3,14 @@ import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import { Cat, Dog, Bird, Fish } from 'lucide-react';
+import { Cat, MessageCircle } from 'lucide-react';
 import { KnowledgeNode, GameState } from '../types/game';
-import { loadKnowledgeTree, saveKnowledgeTree, addNewAnimal } from '../utils/gameLogic';
+import { loadKnowledgeTree, saveKnowledgeTree, addNewAnimal, resetKnowledgeTree } from '../utils/gameLogic';
+import { toast } from "@/hooks/use-toast";
+import GameHeader from './GameHeader';
+import GameQuestion from './GameQuestion';
+import GameGuess from './GameGuess';
+import LearningForm from './LearningForm';
 
 const AnimalGame = () => {
   const [knowledgeTree, setKnowledgeTree] = useState<KnowledgeNode>(loadKnowledgeTree());
@@ -26,7 +31,27 @@ const AnimalGame = () => {
   }, [gameState.gameStarted, knowledgeTree]);
 
   const handleStartGame = () => {
-    setGameState(prev => ({ ...prev, gameStarted: true, currentNode: knowledgeTree }));
+    setGameState(prev => ({ 
+      ...prev, 
+      gameStarted: true, 
+      currentNode: knowledgeTree,
+      isGuessing: false,
+      isLearning: false,
+      correctAnimal: '',
+      newQuestion: ''
+    }));
+    setAnswerPath([]);
+  };
+
+  const handleResetKnowledge = () => {
+    if (window.confirm("確定要重置電腦的所有動物知識嗎？這將會刪除所有已經學習的內容。")) {
+      resetKnowledgeTree();
+      setKnowledgeTree(loadKnowledgeTree());
+      toast({
+        title: "知識已重置",
+        description: "電腦的動物知識已被重置為初始狀態",
+      });
+    }
   };
 
   const handleAnswer = (answer: boolean) => {
@@ -57,6 +82,10 @@ const AnimalGame = () => {
         newQuestion: '',
       });
       setAnswerPath([]);
+      toast({
+        title: "猜對了！",
+        description: "電腦成功猜到你心中的動物了！",
+      });
     } else {
       setGameState(prev => ({ ...prev, isLearning: true }));
     }
@@ -85,19 +114,18 @@ const AnimalGame = () => {
       newQuestion: '',
     });
     setAnswerPath([]);
+    
+    toast({
+      title: "謝謝你的教導！",
+      description: `電腦已經學會了如何辨認"${gameState.correctAnimal}"`,
+    });
   };
 
   if (!gameState.gameStarted) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from
--purple-50 to-white">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-purple-50 to-white p-4">
         <Card className="p-8 max-w-md w-full space-y-6">
-          <div className="flex justify-center space-x-4">
-            <Cat className="w-8 h-8 text-purple-500" />
-            <Dog className="w-8 h-8 text-purple-400" />
-            <Bird className="w-8 h-8 text-purple-300" />
-            <Fish className="w-8 h-8 text-purple-200" />
-          </div>
+          <GameHeader />
           <h1 className="text-2xl font-bold text-center text-purple-900">
             動物猜謎遊戲
           </h1>
@@ -110,6 +138,13 @@ const AnimalGame = () => {
           >
             開始遊戲
           </Button>
+          <Button 
+            onClick={handleResetKnowledge}
+            variant="outline"
+            className="w-full mt-2"
+          >
+            重置知識庫
+          </Button>
         </Card>
       </div>
     );
@@ -117,90 +152,34 @@ const AnimalGame = () => {
 
   if (gameState.isLearning) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-white">
-        <Card className="p-8 max-w-md w-full space-y-6">
-          <h2 className="text-xl font-semibold text-purple-900">
-            幫我學習新動物！
-          </h2>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                這個動物是什麼？
-              </label>
-              <Input
-                value={gameState.correctAnimal}
-                onChange={(e) => setGameState(prev => ({ ...prev, correctAnimal: e.target.value }))}
-                className="mt-1"
-                placeholder="例如：兔子"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                請問一個問題來區分{gameState.correctAnimal}和{gameState.currentNode?.value}
-              </label>
-              <Input
-                value={gameState.newQuestion}
-                onChange={(e) => setGameState(prev => ({ ...prev, newQuestion: e.target.value }))}
-                className="mt-1"
-                placeholder="例如：這個動物會跳嗎？"
-              />
-            </div>
-            <Button 
-              onClick={handleNewAnimalSubmit}
-              disabled={!gameState.correctAnimal || !gameState.newQuestion}
-              className="w-full bg-purple-600 hover:bg-purple-700"
-            >
-              教我認識這個新動物
-            </Button>
-          </div>
-        </Card>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-white p-4">
+        <LearningForm 
+          currentAnimal={gameState.currentNode?.value || ''}
+          correctAnimal={gameState.correctAnimal}
+          newQuestion={gameState.newQuestion}
+          onAnimalChange={(animal) => setGameState(prev => ({ ...prev, correctAnimal: animal }))}
+          onQuestionChange={(question) => setGameState(prev => ({ ...prev, newQuestion: question }))}
+          onSubmit={handleNewAnimalSubmit}
+        />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-white">
-      <Card className="p-8 max-w-md w-full space-y-6">
-        <h2 className="text-xl font-semibold text-purple-900">
-          {gameState.isGuessing ? "我猜是..." : "讓我問你..."}
-        </h2>
-        <p className="text-lg text-gray-700">
-          {gameState.currentNode?.value}
-        </p>
-        <div className="flex justify-center space-x-4">
-          {gameState.isGuessing ? (
-            <>
-              <Button 
-                onClick={() => handleGuessResponse(true)}
-                className="bg-green-500 hover:bg-green-600"
-              >
-                猜對了！
-              </Button>
-              <Button 
-                onClick={() => handleGuessResponse(false)}
-                className="bg-red-500 hover:bg-red-600"
-              >
-                猜錯了
-              </Button>
-            </>
-          ) : (
-            <>
-              <Button 
-                onClick={() => handleAnswer(true)}
-                className="bg-purple-600 hover:bg-purple-700"
-              >
-                是
-              </Button>
-              <Button 
-                onClick={() => handleAnswer(false)}
-                className="bg-purple-600 hover:bg-purple-700"
-              >
-                否
-              </Button>
-            </>
-          )}
-        </div>
-      </Card>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-white p-4">
+      {gameState.isGuessing ? (
+        <GameGuess 
+          animal={gameState.currentNode?.value || ''}
+          onCorrect={() => handleGuessResponse(true)}
+          onIncorrect={() => handleGuessResponse(false)}
+        />
+      ) : (
+        <GameQuestion 
+          question={gameState.currentNode?.value || ''}
+          onYes={() => handleAnswer(true)}
+          onNo={() => handleAnswer(false)}
+        />
+      )}
     </div>
   );
 };
