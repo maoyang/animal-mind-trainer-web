@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import { Cat, MessageCircle } from 'lucide-react';
+import { ListOrdered, Example } from 'lucide-react';
 import { KnowledgeNode, GameState } from '../types/game';
 import { loadKnowledgeTree, saveKnowledgeTree, addNewAnimal, resetKnowledgeTree } from '../utils/gameLogic';
 import { toast } from "@/hooks/use-toast";
@@ -129,9 +129,37 @@ const AnimalGame = () => {
           <h1 className="text-2xl font-bold text-center text-purple-900">
             動物猜謎遊戲
           </h1>
-          <p className="text-center text-gray-600">
-            想一個動物，讓我來猜猜看是什麼！如果我猜錯了，你可以教我認識新的動物。
-          </p>
+          
+          <div className="space-y-4 text-gray-600">
+            <div className="flex items-start gap-2">
+              <ListOrdered className="w-5 h-5 text-purple-600 mt-1 flex-shrink-0" />
+              <div className="space-y-2">
+                <p className="font-semibold">遊戲規則：</p>
+                <ul className="list-disc list-inside space-y-1 pl-2">
+                  <li>在心中想一個動物</li>
+                  <li>電腦會透過是非問題來猜測這個動物</li>
+                  <li>如果猜錯了，你可以教電腦認識新的動物</li>
+                  <li>電腦會記住你教它的知識，下次會更聰明！</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-2">
+              <Example className="w-5 h-5 text-purple-600 mt-1 flex-shrink-0" />
+              <div className="space-y-2">
+                <p className="font-semibold">遊戲範例：</p>
+                <div className="bg-purple-50 p-3 rounded-md space-y-2">
+                  <p>1. 你心裡想「貓」</p>
+                  <p>2. 電腦問：「這個動物會叫汪汪嗎？」</p>
+                  <p>3. 你回答：「否」</p>
+                  <p>4. 電腦猜：「是貓嗎？」</p>
+                  <p>5. 你回答：「是」</p>
+                  <p>- 電腦猜對了！</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <Button 
             onClick={handleStartGame}
             className="w-full bg-purple-600 hover:bg-purple-700"
