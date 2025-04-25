@@ -1,9 +1,8 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import { ListOrdered, Example } from 'lucide-react';
+import { ListOrdered, BookOpen } from 'lucide-react';
 import { KnowledgeNode, GameState } from '../types/game';
 import { loadKnowledgeTree, saveKnowledgeTree, addNewAnimal, resetKnowledgeTree } from '../utils/gameLogic';
 import { toast } from "@/hooks/use-toast";
@@ -145,7 +144,7 @@ const AnimalGame = () => {
             </div>
 
             <div className="flex items-start gap-2">
-              <Example className="w-5 h-5 text-purple-600 mt-1 flex-shrink-0" />
+              <BookOpen className="w-5 h-5 text-purple-600 mt-1 flex-shrink-0" />
               <div className="space-y-2">
                 <p className="font-semibold">遊戲範例：</p>
                 <div className="bg-purple-50 p-3 rounded-md space-y-2">
