@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -147,13 +148,22 @@ const AnimalGame = () => {
               <BookOpen className="w-5 h-5 text-purple-600 mt-1 flex-shrink-0" />
               <div className="space-y-2">
                 <p className="font-semibold">遊戲範例：</p>
-                <div className="bg-purple-50 p-3 rounded-md space-y-2">
-                  <p>1. 你心裡想「貓」</p>
-                  <p>2. 電腦問：「這個動物會叫汪汪嗎？」</p>
-                  <p>3. 你回答：「否」</p>
-                  <p>4. 電腦猜：「是貓嗎？」</p>
-                  <p>5. 你回答：「是」</p>
-                  <p>- 電腦猜對了！</p>
+                <div className="bg-purple-50 p-3 rounded-md space-y-2 text-sm">
+                  <p>1. 你心裡想「長頸鹿」</p>
+                  <p>2. 電腦問：「這個動物是哺乳類嗎？」</p>
+                  <p>3. 你回答：「是」</p>
+                  <p>4. 電腦再問：「這個動物會叫汪汪嗎？」</p>
+                  <p>5. 你回答：「否」</p>
+                  <p>6. 電腦猜：「是貓嗎？」</p>
+                  <p>7. 你回答：「不是」</p>
+                  <div className="bg-white p-2 rounded mt-2">
+                    <p className="font-semibold text-purple-700">👉 學習階段：</p>
+                    <p>電腦會問：「請告訴我這是什麼動物？」</p>
+                    <p>你回答：「長頸鹿」</p>
+                    <p>電腦再問：「請給我一個可以區別長頸鹿和貓的問題」</p>
+                    <p>你可以回答：「這個動物的脖子很長嗎？」</p>
+                    <p>之後電腦就學會了如何區別長頸鹿和貓！</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -212,3 +222,4 @@ const AnimalGame = () => {
 };
 
 export default AnimalGame;
+
