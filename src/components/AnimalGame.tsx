@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -161,7 +160,7 @@ const AnimalGame = () => {
                     <p>電腦會問：「請告訴我這是什麼動物？」</p>
                     <p>你回答：「長頸鹿」</p>
                     <p>電腦再問：「請給我一個可以區別長頸鹿和貓的問題」</p>
-                    <p>你可以回答：「這個動物的脖子很長嗎？」</p>
+                    <p>你可以回答：「這個動物的脖子很長」</p>
                     <p>之後電腦就學會了如何區別長頸鹿和貓！</p>
                   </div>
                 </div>
@@ -222,4 +221,3 @@ const AnimalGame = () => {
 };
 
 export default AnimalGame;
-
